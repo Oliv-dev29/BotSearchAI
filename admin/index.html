@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html class="light" lang="fr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>SangBenin — Dashboard Admin</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-surface-variant": "#5a403c",
+            "on-primary-container": "#ff907f",
+            "surface-bright": "#f4fafd",
+            "on-background": "#161d1f",
+            "on-error": "#ffffff",
+            "surface-tint": "#b52619",
+            "primary-fixed": "#ffdad4",
+            "tertiary-fixed-dim": "#c5c7c8",
+            "secondary-container": "#da3433",
+            "inverse-on-surface": "#ebf2f4",
+            secondary: "#b6171e",
+            "on-primary-fixed": "#410000",
+            error: "#ba1a1a",
+            "surface-dim": "#d4dbdd",
+            "secondary-fixed": "#ffdad6",
+            "inverse-surface": "#2b3234",
+            "on-secondary-container": "#fffbff",
+            "on-tertiary-fixed": "#191c1d",
+            "on-primary": "#ffffff",
+            "outline-variant": "#e3beb8",
+            "on-tertiary": "#ffffff",
+            "tertiary-fixed": "#e1e3e4",
+            "surface-container": "#e8eff1",
+            background: "#f4fafd",
+            "primary-fixed-dim": "#ffb4a8",
+            "surface-container-low": "#eef5f7",
+            "on-secondary-fixed-variant": "#930010",
+            surface: "#f4fafd",
+            "tertiary-container": "#404344",
+            "surface-container-high": "#e2e9ec",
+            "on-error-container": "#93000a",
+            "surface-variant": "#dde4e6",
+            "inverse-primary": "#ffb4a8",
+            "on-tertiary-container": "#aeafb0",
+            outline: "#8e706b",
+            "on-secondary-fixed": "#410003",
+            "surface-container-highest": "#dde4e6",
+            "on-tertiary-fixed-variant": "#454748",
+            "primary-container": "#8b0000",
+            primary: "#610000",
+            "error-container": "#ffdad6",
+            "secondary-fixed-dim": "#ffb3ac",
+            tertiary: "#2a2d2e",
+            "on-surface": "#161d1f",
+            "surface-container-lowest": "#ffffff",
+            "on-primary-fixed-variant": "#920703",
+            "on-secondary": "#ffffff"
+          },
+          borderRadius: {
+            DEFAULT: "0.25rem",
+            lg: "0.5rem",
+            xl: "0.75rem",
+            "2xl": "1.5rem",
+            "3xl": "24px",
+            full: "9999px"
+          },
+          spacing: {
+            "stack-md": "1rem",
+            "stack-sm": "0.5rem",
+            "container-padding": "2rem",
+            "card-padding": "1.5rem",
+            "gutter-bento": "1.5rem"
+          },
+          fontFamily: {
+            "headline-lg": ["Inter", "sans-serif"],
+            "body-md": ["Inter", "sans-serif"],
+            "headline-xl": ["Inter", "sans-serif"],
+            "body-lg": ["Inter", "sans-serif"],
+            "title-md": ["Inter", "sans-serif"]
+          },
+          fontSize: {
+            "label-sm": ["12px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "600" }],
+            "headline-lg": ["28px", { lineHeight: "36px", letterSpacing: "-0.01em", fontWeight: "600" }],
+            "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+            "headline-xl": ["36px", { lineHeight: "44px", letterSpacing: "-0.02em", fontWeight: "700" }],
+            "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+            "title-md": ["18px", { lineHeight: "24px", fontWeight: "600" }]
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #dde4e6;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden">
+  <div id="login-screen">
+    <div class="login-box">
+      <div class="login-logo">🩸</div>
+      <h1>SangBenin Admin</h1>
+      <p>Connexion réservée aux agents autorisés</p>
+      <form id="login-form">
+        <input type="text" id="username-input" placeholder="Nom d'utilisateur" required autocomplete="username" />
+        <input type="password" id="password-input" placeholder="Mot de passe" required
+          autocomplete="current-password" />
+        <button type="submit">Se connecter</button>
+        <p class="register-link">Pas encore de compte ? <a href="#" id="show-register">Créer un compte</a></p>
+      </form>
+      <div id="login-error"></div>
+    </div>
+  </div>
+
+  <div id="register-screen">
+    <div class="login-box">
+      <div class="login-logo">🩸</div>
+      <h1>Créer un compte</h1>
+      <p>Votre compte sera activé par l'administrateur</p>
+      <form id="register-form">
+        <input type="text" id="reg-username" placeholder="Nom d'utilisateur" required />
+        <input type="password" id="reg-password" placeholder="Mot de passe (8 car. min)" required />
+        <select id="reg-center" required>
+          <option value="">Choisir votre centre...</option>
+        </select>
+        <button type="submit">Créer mon compte</button>
+        <p class="register-link"><a href="#" id="show-login">Retour à la connexion</a></p>
+      </form>
+      <div id="register-feedback"></div>
+    </div>
+  </div>
+
+  <div id="password-change-screen" class="auth-blocking-screen" hidden>
+    <div class="login-box">
+      <div class="login-logo">🔐</div>
+      <h1>Changement obligatoire</h1>
+      <p>Pour sécuriser votre compte administrateur, choisissez un nouveau mot de passe.</p>
+      <form id="password-change-form">
+        <input type="password" id="current-password-input" placeholder="Mot de passe actuel" required
+          autocomplete="current-password" />
+        <input type="password" id="new-password-input" placeholder="Nouveau mot de passe (12 car. min)" required
+          minlength="12" autocomplete="new-password" />
+        <input type="password" id="confirm-password-input" placeholder="Confirmer le nouveau mot de passe" required
+          minlength="12" autocomplete="new-password" />
+        <button type="submit">Mettre à jour mon mot de passe</button>
+      </form>
+      <div id="password-change-error"></div>
+    </div>
+  </div>
+
+  <div id="dashboard" class="hidden">
+    <aside
+      class="fixed left-0 top-0 h-full py-8 px-4 flex flex-col h-screen w-72 bg-surface-container-low dark:bg-surface-container-lowest border-r border-outline-variant/20 shadow-md rounded-r-[24px] z-50">
+      <div class="flex items-center gap-3 mb-8 px-4">
+        <div
+          class="w-10 h-10 bg-primary-container rounded-xl flex items-center justify-center text-on-primary-container">
+          <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bloodtype</span>
+        </div>
+        <div>
+          <h1 class="font-headline-xl text-headline-xl font-black text-primary leading-tight">SangBenin</h1>
+          <p class="text-xs font-semibold text-on-surface-variant/70 tracking-wider uppercase">Admin Mission Control</p>
+        </div>
+      </div>
+
+      <nav class="flex-grow space-y-2">
+        <button type="button"
+          class="tab-btn flex w-full items-center gap-4 px-4 py-3 bg-primary-container text-on-primary-container rounded-xl font-bold shadow-sm transition-transform active:scale-95 active"
+          data-tab="overview">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span class="font-title-md">Tableau de Bord</span>
+        </button>
+        <button type="button"
+          class="tab-btn flex w-full items-center gap-4 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors duration-200 rounded-xl"
+          data-tab="movements">
+          <span class="material-symbols-outlined">history</span>
+          <span class="font-title-md">Mouvements</span>
+        </button>
+        <a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors duration-200 rounded-xl"
+          href="#tab-overview">
+          <span class="material-symbols-outlined">bloodtype</span>
+          <span class="font-title-md">Inventaire</span>
+        </a>
+        <a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors duration-200 rounded-xl"
+          href="#tab-overview">
+          <span class="material-symbols-outlined">location_on</span>
+          <span class="font-title-md">Centres</span>
+        </a>
+        <a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors duration-200 rounded-xl"
+          href="#tab-overview">
+          <span class="material-symbols-outlined">emergency</span>
+          <span class="font-title-md">Alertes</span>
+        </a>
+        <a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors duration-200 rounded-xl"
+          href="#tab-overview">
+          <span class="material-symbols-outlined">monitoring</span>
+          <span class="font-title-md">Analyses</span>
+        </a>
+        <a class="flex items-center gap-4 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors duration-200 rounded-xl"
+          href="#tab-overview">
+          <span class="material-symbols-outlined">settings</span>
+          <span class="font-title-md">Paramètres</span>
+        </a>
+      </nav>
+      <!-- Sidebar footer : exports + logout -->
+      <div class="mt-auto px-4 py-3">
+        <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60 mb-2">Exports Institutionnels</p>
+        <div class="flex gap-2 mb-3">
+          <button id="export-csv-btn" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-container text-on-surface text-xs font-bold hover:bg-surface-variant/50 transition-colors">
+            <span class="material-symbols-outlined text-[16px]">description</span> CSV
+          </button>
+          <button id="export-excel-btn" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-container text-on-surface text-xs font-bold hover:bg-surface-variant/50 transition-colors">
+            <span class="material-symbols-outlined text-[16px]">table_view</span> Excel
+          </button>
+        </div>
+        <button id="logout-btn" class="flex w-full items-center justify-center gap-2 py-3 bg-primary text-white rounded-2xl font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all active:scale-95">
+          <span class="material-symbols-outlined">logout</span>
+          Déconnexion
+        </button>
+      </div>
+    </aside>
+
+    <header class="ml-72 sticky top-0 z-40 bg-surface-container-low/80 backdrop-blur-md border-b border-outline-variant/40 shadow-sm px-container-padding py-4 flex items-center justify-between gap-4">
+      <div class="topbar-left">
+        <h1 class="font-headline-xl text-headline-xl font-black text-primary leading-none">SangBenin Admin</h1>
+        <p class="text-sm font-semibold text-on-surface-variant capitalize">Admin</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 bg-surface-container rounded-2xl px-4 py-2 border border-outline-variant/20">
+          <span class="material-symbols-outlined text-[18px] text-on-surface-variant">search</span>
+          <input placeholder="Rechercher..." class="bg-transparent text-sm outline-none w-40 text-on-surface placeholder:text-on-surface-variant/50" />
+        </div>
+        <button class="w-9 h-9 rounded-xl bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors relative">
+          <span class="material-symbols-outlined text-[20px]">notifications</span>
+        </button>
+        <div class="flex items-center gap-2">
+          <button class="w-9 h-9 rounded-xl bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-colors" type="button">
+            <span class="material-symbols-outlined">help_outline</span>
+          </button>
+        </div>
+        <div class="flex items-center gap-3 pl-4 border-l border-outline-variant/20">
+          <div class="text-right">
+            <p class="font-title-md text-on-surface leading-none">Admin</p>
+            <p class="text-xs text-on-surface-variant font-medium">Contrôleur National</p>
+          </div>
+          <img alt="Avatar Administrateur" class="w-10 h-10 rounded-full object-cover border-2 border-primary/20"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDehItf4ru1QdFFCobSFTiNAlN6lKrh3VRjMwA7TI-a-yzvNqmDuGEu4qS6tBTj6sw779OIESmCIdoCzROpX25f26U4frDpPKYF_UleHeJ61Ojn7QaDyVGUlUaWZi6XzO-pM7EGe6KCM4pPQxHtKQvUgve29S4tvIvXkEix74mrHM4_69cpvKLOewLXKot6EX1tYpAzkYzclsthDEw7KoitYS9X1crKFSWn_N7-hlB5RyvSPa2xLFvJ--GFZMOVbvHYVBWtTg9wHHvG" />
+        </div>
+      </div>
+    </header>
+
+    <main class="ml-72 p-container-padding space-y-gutter-bento pb-20">
+      <section class="tab-content active" id="tab-overview">
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-gutter-bento">
+          <div
+            class="glass-card rounded-3xl p-card-padding flex items-center gap-4 shadow-sm border-l-4 border-primary">
+            <div class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined">business</span>
+            </div>
+            <div>
+              <p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Centres Totaux</p>
+              <h3 class="text-headline-lg font-bold text-on-surface" id="stat-total">—</h3>
+            </div>
+          </div>
+          <div
+            class="glass-card rounded-3xl p-card-padding flex items-center gap-4 shadow-sm border-l-4 border-green-500">
+            <div class="w-12 h-12 bg-green-500/10 rounded-2xl flex items-center justify-center text-green-600">
+              <span class="material-symbols-outlined">verified</span>
+            </div>
+            <div>
+              <p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Ouverts</p>
+              <h3 class="text-headline-lg font-bold text-on-surface" id="stat-open">—</h3>
+            </div>
+          </div>
+          <div
+            class="glass-card rounded-3xl p-card-padding flex items-center gap-4 shadow-sm border-l-4 border-outline-variant">
+            <div
+              class="w-12 h-12 bg-surface-variant/10 rounded-2xl flex items-center justify-center text-on-surface-variant">
+              <span class="material-symbols-outlined">lock</span>
+            </div>
+            <div>
+              <p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Fermés</p>
+              <h3 class="text-headline-lg font-bold text-on-surface" id="stat-closed">—</h3>
+            </div>
+          </div>
+          <div
+            class="glass-card rounded-3xl p-card-padding flex items-center gap-4 shadow-sm border-l-4 border-secondary">
+            <div class="w-12 h-12 bg-secondary/10 rounded-2xl flex items-center justify-center text-secondary">
+              <span class="material-symbols-outlined">notification_important</span>
+            </div>
+            <div>
+              <p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Alertes Actives</p>
+              <h3 class="text-headline-lg font-bold text-secondary" id="stat-alerts">—</h3>
+            </div>
+          </div>
+          <div
+            class="glass-card rounded-3xl p-card-padding flex items-center gap-4 shadow-sm border-l-4 border-primary">
+            <div class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined">warning_amber</span>
+            </div>
+            <div>
+              <p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Stocks critiques</p>
+              <h3 class="text-headline-lg font-bold text-primary" id="stat-critiques">—</h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-12 gap-gutter-bento mt-6">
+          <section class="col-span-12 lg:col-span-8 glass-card rounded-3xl p-card-padding shadow-sm">
+            <div class="flex justify-between items-center mb-6">
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-primary"
+                  style="font-variation-settings: 'FILL' 1;">analytics</span>
+                <h4 class="font-headline-lg text-headline-lg font-bold">Monitoring des Stocks</h4>
+              </div>
+              <button class="text-primary font-bold hover:underline" type="button">Vue détaillée</button>
+            </div>
+            <div class="space-y-4" id="centers-grid"></div>
+          </section>
+
+          <aside class="col-span-12 lg:col-span-4 flex flex-col gap-gutter-bento">
+            <section class="glass-card rounded-3xl p-card-padding shadow-sm">
+              <div class="flex items-center gap-3 mb-4">
+                <span class="material-symbols-outlined text-primary">military_tech</span>
+                <h4 class="font-title-md text-title-md">Centres les plus actifs</h4>
+              </div>
+              <div class="grid gap-4" id="insights-grid"></div>
+              <div class="mt-4 text-xs text-on-surface-variant" id="insights-footer"></div>
+            </section>
+
+            <section class="glass-card rounded-3xl p-card-padding shadow-sm" id="alerts-banner" style="display:none">
+              <div class="flex items-center gap-3 mb-4">
+                <span class="material-symbols-outlined text-secondary">warning</span>
+                <h4 class="font-title-md text-title-md">Alertes en cours</h4>
+              </div>
+              <div class="flex flex-col gap-2" id="alerts-list"></div>
+            </section>
+
+            <section class="glass-card rounded-3xl p-card-padding shadow-sm">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-primary">monitoring</span>
+                  <h4 class="font-title-md text-title-md">Analyse des mouvements</h4>
+                </div>
+                <select id="chart-period-filter" class="rounded-xl border border-outline-variant/30 bg-white/80 px-3 py-1.5 text-xs font-semibold">
+                  <option value="7">7 jours</option>
+                  <option value="14" selected>14 jours</option>
+                  <option value="30">30 jours</option>
+                </select>
+              </div>
+              <p class="text-xs text-on-surface-variant mb-3">
+                <span id="consumption-period-label">Volume des mouvements sur 14 jours</span>
+                <span class="ml-2 inline-block px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold" id="consumption-period-chip">14j</span>
+              </p>
+              <div class="mb-4" id="consumption-chart"></div>
+              <div id="stock-chart"></div>
+            </section>
+
+            <section class="glass-card rounded-3xl p-card-padding shadow-sm">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="material-symbols-outlined text-primary">assignment_late</span>
+                <h4 class="font-title-md text-title-md">Alertes prioritaires</h4>
+              </div>
+              <p class="text-xs text-on-surface-variant mb-4" id="priority-alerts-meta"></p>
+              <div class="overflow-x-auto rounded-2xl border border-outline-variant/15 bg-white/70">
+                <table class="w-full text-left text-sm">
+                  <thead class="bg-surface-container-low text-on-surface-variant text-xs uppercase tracking-wider">
+                    <tr>
+                      <th class="px-4 py-3">Niveau</th>
+                      <th class="px-4 py-3">Centre</th>
+                      <th class="px-4 py-3">Message</th>
+                      <th class="px-4 py-3">Âge</th>
+                    </tr>
+                  </thead>
+                  <tbody id="priority-alerts-tbody" class="divide-y divide-outline-variant/10"></tbody>
+                </table>
+              </div>
+            </section>
+
+          </aside>
+        </div>
+
+        <section class="col-span-12 mt-6 glass-card rounded-3xl overflow-hidden relative group min-h-[350px]">
+          <div class="absolute inset-0 z-0 overflow-hidden">
+            <img alt="Carte du Bénin"
+              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCV_FokX_-CKQ2jK4JgN8dmFfm68qCK87BGebKBW1Ob6QFepWr3G89YkZsJ8-YfAOgDvUyrtrfz267k6ivo4701W8pFlBD5LbV-tnw4pj6PkdGYE9I4CJ6GTXQawSz9tpKTff2PE2RTZQfgzfzSCsYT7AdL-35CFNcos-dEmuwYqLd3xQ_4MXA-d4DaUZZ4th3lC0OonTxgSTiaLrxVkPgdxzNK7ohtJel7ZQPvC_pQo53YQUn5XeDUbaEqz-X_78sVdRRAfgyL_KW" />
+            <div class="absolute inset-0 bg-gradient-to-r from-background via-background/20 to-transparent"></div>
+          </div>
+          <div class="relative z-10 p-card-padding max-w-md h-full flex flex-col justify-center">
+            <h4 class="font-headline-lg text-headline-lg font-bold text-primary mb-2">Couverture Géographique</h4>
+            <p class="text-body-lg text-on-surface-variant mb-6">Visualisez la distribution en temps réel. Identifiez
+              les zones de tension et déployez les ressources logistiques.</p>
+            <div class="flex gap-3 flex-wrap">
+              <button
+                class="bg-primary text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-primary/20 transition-all hover:scale-105 active:scale-95"
+                type="button">
+                <span class="material-symbols-outlined">map</span>
+                Ouvrir la Carte
+              </button>
+              <button
+                class="bg-white/80 backdrop-blur-md text-on-surface px-6 py-3 rounded-2xl font-bold border border-outline-variant/30 transition-all hover:bg-white active:scale-95"
+                type="button">
+                Centres Proches
+              </button>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="tab-content" id="tab-movements">
+        <div class="glass-card rounded-3xl p-card-padding shadow-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="material-symbols-outlined text-primary">history</span>
+            <h4 class="font-headline-lg text-headline-lg font-bold">Historique des mouvements</h4>
+          </div>
+          <div class="flex flex-col lg:flex-row gap-3 mb-6">
+            <select id="filter-center"
+              class="rounded-xl border border-outline-variant/30 bg-white/80 px-3 py-2 text-sm">
+              <option value="">Tous les centres</option>
+            </select>
+            <select id="filter-type" class="rounded-xl border border-outline-variant/30 bg-white/80 px-3 py-2 text-sm">
+              <option value="">Tous les types</option>
+              <option value="entree">Entrée</option>
+              <option value="sortie">Sortie</option>
+              <option value="perte">Perte</option>
+            </select>
+            <select id="filter-blood" class="rounded-xl border border-outline-variant/30 bg-white/80 px-3 py-2 text-sm">
+              <option value="">Tous les groupes</option>
+              <option>O+</option>
+              <option>O-</option>
+              <option>A+</option>
+              <option>A-</option>
+              <option>B+</option>
+              <option>B-</option>
+              <option>AB+</option>
+              <option>AB-</option>
+            </select>
+          </div>
+          <div class="overflow-x-auto rounded-2xl border border-outline-variant/15 bg-white/70">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-surface-container-low text-on-surface-variant text-xs uppercase tracking-wider">
+                <tr>
+                  <th class="px-4 py-3">Date</th>
+                  <th class="px-4 py-3">Centre</th>
+                  <th class="px-4 py-3">Type</th>
+                  <th class="px-4 py-3">Groupe</th>
+                  <th class="px-4 py-3">Quantité</th>
+                  <th class="px-4 py-3">Avant</th>
+                  <th class="px-4 py-3">Après</th>
+                  <th class="px-4 py-3">Note</th>
+                </tr>
+              </thead>
+              <tbody id="movements-tbody" class="divide-y divide-outline-variant/10"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <button
+      class="fixed bottom-8 right-8 w-16 h-16 bg-secondary text-on-secondary rounded-full flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all z-50 group"
+      type="button">
+      <span class="material-symbols-outlined text-3xl">add</span>
+      <span
+        class="absolute right-20 bg-inverse-surface text-inverse-on-surface px-4 py-2 rounded-xl text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-xl">Ajouter
+        un Centre</span>
+    </button>
+  </div>
+
+  <div class="modal-overlay" id="modal-movement">
+    <div class="modal">
+      <h2 id="movement-modal-title">Enregistrer un mouvement</h2>
+      <div class="form-group">
+        <label>Type de mouvement</label>
+        <select id="mv-type">
+          <option value="entree">Entrée (don, livraison)</option>
+          <option value="sortie">Sortie (transfusion)</option>
+          <option value="perte">Perte (périmé, brisé)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Groupe sanguin</label>
+        <select id="mv-blood">
+          <option>O+</option>
+          <option>O-</option>
+          <option>A+</option>
+          <option>A-</option>
+          <option>B+</option>
+          <option>B-</option>
+          <option>AB+</option>
+          <option>AB-</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Quantité (poches)</label>
+        <input type="number" id="mv-qty" min="1" value="1" />
+      </div>
+      <div class="form-group">
+        <label>Note (optionnel)</label>
+        <textarea id="mv-note" placeholder="Ex : Don de la Croix-Rouge..."></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="mv-cancel">Annuler</button>
+        <button class="btn-primary" id="mv-save">Enregistrer</button>
+      </div>
+      <div class="feedback" id="mv-feedback"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-stock">
+    <div class="modal">
+      <h2 id="stock-modal-title">Modifier le stock</h2>
+      <div class="toggle-row">
+        <input type="checkbox" id="stock-is-open" />
+        <label for="stock-is-open">Centre ouvert</label>
+      </div>
+      <div class="stock-edit-grid" id="stock-edit-grid"></div>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="stock-cancel">Annuler</button>
+        <button class="btn-primary" id="stock-save">Sauvegarder</button>
+      </div>
+      <div class="feedback" id="stock-feedback"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+
+</html>
