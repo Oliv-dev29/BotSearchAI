@@ -137,8 +137,11 @@ router.post('/centers/:id/movement', (req, res) => {
   if (!['entree', 'sortie', 'perte'].includes(type)) {
     return res.status(400).json({ error: 'type doit être entree, sortie ou perte' });
   }
-  if (!bloodType || typeof quantity !== 'number' || quantity <= 0) {
-    return res.status(400).json({ error: 'bloodType et quantity (>0) sont requis' });
+  if (!bloodType || !centerService.BLOOD_TYPES.includes(bloodType)) {
+    return res.status(400).json({ error: 'bloodType invalide', validTypes: centerService.BLOOD_TYPES });
+  }
+  if (typeof quantity !== 'number' || quantity <= 0) {
+    return res.status(400).json({ error: 'quantity (>0) requis' });
   }
   const result = centerService.addMovement(id, type, bloodType, quantity, note, req.userId);
   if (!result) return res.status(404).json({ error: 'Centre non trouvé' });

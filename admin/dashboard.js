@@ -279,6 +279,18 @@ async function loadMovements() {
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
 
+// Échappe toute donnée provenant de l'API avant insertion via innerHTML
+// (mouvements, notes, groupes sanguins, noms de centres...).
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  })[ch]);
+}
+
 function isStale(lastUpdated) {
   const diff = (Date.now() - new Date(lastUpdated).getTime()) / 3600000;
   return diff > STALE_HOURS;
@@ -399,7 +411,7 @@ function buildBarChartHTML(items, emptyLabel) {
         <div class="bar-item">
           <div class="bar-value">${item.value}</div>
           <div class="bar-track"><span style="height:${Math.max(8, (item.value / max) * 100)}%"></span></div>
-          <div class="bar-label">${item.label}</div>
+          <div class="bar-label">${escapeHtml(item.label)}</div>
         </div>`,
         )
         .join("")}
@@ -952,8 +964,8 @@ function renderPriorityAlerts() {
               : "bg-slate-100 text-slate-600"
         }">${alert.level}</span>
       </td>
-      <td class="px-4 py-3 font-semibold text-on-surface">${alert.centerName}</td>
-      <td class="px-4 py-3 text-on-surface-variant">${alert.message}</td>
+      <td class="px-4 py-3 font-semibold text-on-surface">${escapeHtml(alert.centerName)}</td>
+      <td class="px-4 py-3 text-on-surface-variant">${escapeHtml(alert.message)}</td>
       <td class="px-4 py-3 text-xs text-on-surface-variant">${alert.age}</td>
     </tr>
   `,
@@ -1077,7 +1089,7 @@ function renderInsights() {
       <div class="insight-list-item">
         <div class="insight-rank">${index + 1}</div>
         <div class="insight-body">
-          <div class="insight-label">${item.bloodType}</div>
+          <div class="insight-label">${escapeHtml(item.bloodType)}</div>
           <div class="insight-bar"><span style="width:${Math.min(100, item.score * 8)}%"></span></div>
         </div>
         <div class="insight-value">${item.score}</div>
@@ -1093,8 +1105,8 @@ function renderInsights() {
       <div class="insight-list-item">
         <div class="insight-rank">${index + 1}</div>
         <div class="insight-body">
-          <div class="insight-label">${item.center.name}</div>
-          <div class="insight-meta">${item.center.quartier}, ${item.center.zone}</div>
+          <div class="insight-label">${escapeHtml(item.center.name)}</div>
+          <div class="insight-meta">${escapeHtml(item.center.quartier)}, ${escapeHtml(item.center.zone)}</div>
         </div>
         <div class="insight-value">${item.score}</div>
       </div>`,
@@ -1225,8 +1237,8 @@ function renderAlertsBanner() {
         a.level === "rupture" ? "bg-red-600" : "bg-amber-500"
       } shrink-0"></span>
       <div>
-        <p class="text-sm font-bold text-on-surface">${a.centerName}</p>
-        <p class="text-xs text-on-surface-variant">${a.message}</p>
+        <p class="text-sm font-bold text-on-surface">${escapeHtml(a.centerName)}</p>
+        <p class="text-xs text-on-surface-variant">${escapeHtml(a.message)}</p>
       </div>
     </div>
   `,
@@ -1274,7 +1286,7 @@ function renderCentersGrid() {
             <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
               <span class="material-symbols-outlined text-sm">apartment</span>
             </div>
-            <span class="font-title-md text-on-surface truncate">${c.name}</span>
+            <span class="font-title-md text-on-surface truncate">${escapeHtml(c.name)}</span>
           </div>
           <div class="flex items-center gap-2 shrink-0">
             <span class="flex items-center gap-1.5 px-3 py-1 bg-surface-container-highest/60 rounded-full border border-outline-variant/20 text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">
@@ -1480,19 +1492,19 @@ function renderMovementsTable() {
       (m) => `
     <tr class="align-top">
       <td class="px-4 py-3 text-xs text-on-surface-variant">${fmtDate(m.date)}</td>
-      <td class="px-4 py-3 font-semibold text-on-surface">${m.centerName}</td>
+      <td class="px-4 py-3 font-semibold text-on-surface">${escapeHtml(m.centerName)}</td>
       <td class="px-4 py-3"><span class="inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${
         m.type === "entree"
           ? "bg-green-100 text-green-700"
           : m.type === "sortie"
             ? "bg-blue-100 text-blue-700"
             : "bg-red-100 text-red-700"
-      }">${m.type}</span></td>
-      <td class="px-4 py-3 font-bold text-on-surface">${m.bloodType}</td>
+      }">${escapeHtml(m.type)}</span></td>
+      <td class="px-4 py-3 font-bold text-on-surface">${escapeHtml(m.bloodType)}</td>
       <td class="px-4 py-3 text-on-surface-variant">${m.quantity} poche(s)</td>
       <td class="px-4 py-3 text-on-surface-variant">${m.quantityBefore}</td>
       <td class="px-4 py-3 text-on-surface-variant">${m.quantityAfter}</td>
-      <td class="px-4 py-3 text-on-surface-variant">${m.note || "—"}</td>
+      <td class="px-4 py-3 text-on-surface-variant">${escapeHtml(m.note) || "—"}</td>
     </tr>`,
     )
     .join("");
