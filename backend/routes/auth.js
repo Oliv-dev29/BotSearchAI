@@ -3,9 +3,10 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const db = require("../db");
 const { signToken } = require("../services/authToken");
+const { loginLimiter, registerLimiter } = require("../middleware/authRateLimit");
 
 // POST /api/auth/login
-router.post("/login", async (req, res) => {
+router.post("/login", loginLimiter, async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
     return res.status(400).json({ error: "username et password requis" });
@@ -42,7 +43,7 @@ router.post("/login", async (req, res) => {
 });
 
 // POST /api/auth/register
-router.post("/register", async (req, res) => {
+router.post("/register", registerLimiter, async (req, res) => {
   const { username, password, centerId } = req.body;
 
   if (!username || !password || !centerId) {

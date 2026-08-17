@@ -8,12 +8,13 @@ const {
   requirePasswordChangeCompleted,
 } = require('../middleware/auth');
 const { signToken } = require('../services/authToken');
+const { changePasswordLimiter } = require('../middleware/authRateLimit');
 
 router.use(requireAuth);
 
 // POST /api/admin/change-password
 // Accessible uniquement avec un JWT valide, avant le garde obligatoire.
-router.post('/change-password', async (req, res) => {
+router.post('/change-password', changePasswordLimiter, async (req, res) => {
   const { currentPassword, newPassword } = req.body;
 
   if (typeof currentPassword !== 'string' || !currentPassword) {
